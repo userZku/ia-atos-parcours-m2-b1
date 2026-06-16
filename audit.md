@@ -6,43 +6,53 @@
 
 ## 1. Verdict qualité
 
-> 3 à 5 problèmes principaux **chiffrés** + ce que tu as fait pour les
-> traiter dans le pipeline.
+1. **Valeurs extrêmes sur `credit_amount` (7,2 % selon la règle IQR)**.
+  Impact métier : une petite partie des dossiers porte des montants très
+  supérieurs au reste de la population. Action mise en place : scaling
+  standard sur les variables numériques pour limiter les effets d'échelle.
 
-Exemple de format attendu :
+2. **Complément `customer_segment` incomplet (3,7 % de manquants)** dans
+  `german_credit_supplement.csv`. Action mise en place : imputation par la
+  modalité la plus fréquente dans le flux de préparation.
 
-> 1. **18 % de manquants sur `purpose`** — imputés par la modalité la plus
->    fréquente (`radio/TV`). Recommandation : remonter la cause auprès
->    de l'équipe collecte (formulaire optionnel ?).
-> 2. ...
+3. **Variable `personal_status_sex` composite** (genre + statut civil).
+  Problème qualité de schéma : une seule colonne agrège deux dimensions
+  métier différentes, ce qui réduit la lisibilité des analyses.
+
+4. **Déséquilibre de la cible** : `good_credit` 70 % vs `bad_credit` 30 %.
+  Risque : un suivi de performance global peut masquer les erreurs sur les
+  dossiers à risque (`bad_credit`).
 
 ## 2. Verdict éthique
 
-> 2 à 3 alertes principales — variables sensibles, disparate impact
-> chiffré, intersectionnalités si pertinentes.
+1. **Alerte DI sur `foreign_worker`** : DI = **1,2877** (hors intervalle
+  [0,8 ; 1,25]). Signal : l'écart de taux `good_credit` entre groupes est
+  au-dessus du seuil de vigilance (règle des 4/5).
 
-Exemple :
+2. **Signal proche du seuil sur `personal_status_sex`** : DI = **0,8179**.
+  Le ratio reste dans l'intervalle, mais proche de 0,8. Interprétation
+  limitée car la variable est composite.
 
-> 1. **`personal_status_sex` est une variable composite** (genre + statut
->    civil dans la même colonne). Anti-pattern : impossible de surveiller
->    séparément le biais par genre vs par statut. Recommandation : **split
->    en 2 colonnes** côté collecte de données.
-> 2. **Disparate impact sur `foreign_worker`** : DI = 0.67 (en dessous du
->    seuil 4/5 = 0.8). Les travailleurs étrangers sont 33 % moins susceptibles
->    d'être classés `good_credit`. Recommandation : audit complet en
->    consultation avec votre DPO.
-> 3. **`customer_segment` (basic/plus/premium/private) corrèle probablement
->    avec le niveau de richesse** : risque d'exclure indirectement des profils
->    socio-économiques fragiles. Recommandation : validation DPO avant usage en
->    scoring et suivi de l'impact par segment.
+3. **Risque proxy socio-économique sur `customer_segment`** (`basic`/
+  `plus`/`premium`/`private`). Même sans variable de revenu explicite,
+  ce segment peut capturer une information de richesse et produire un
+  traitement indirectement discriminant.
 
 ## 3. Recommandations
 
 > Liste courte d'actions concrètes pour Eckmühl (3-5 items).
 
-- ...
-- ...
-- ...
+1. **Collecte de données** : séparer `personal_status_sex` en deux champs
+  distincts (genre, statut civil) pour permettre un contrôle de biais fiable.
+2. **Gouvernance éthique** : valider avec le DPO l'usage de `customer_segment`
+  en scoring crédit et documenter explicitement les usages interdits.
+3. **Monitoring** : suivre à chaque version les DI par groupe sensible avec
+  seuils d'alerte [0,8 ; 1,25].
+4. **Performance métier** : reporter systématiquement les métriques par classe
+  (`good_credit`/`bad_credit`) pour éviter les conclusions trompeuses dues au
+  déséquilibre 70/30.
+5. **Qualité de collecte** : fiabiliser le flux du complément segment
+  commercial pour supprimer les manquants en amont.
 
 ## 4. Limites de cet audit
 
@@ -51,8 +61,9 @@ Exemple :
 - Pas de mitigation des biais à ce stade (cf. modules M7-M8 du parcours).
 - Pas de test de robustesse sur dataset d'évaluation séparé (déjà discuté
   avec Karim).
-- ...
+- Pas d'analyse causale : les signaux observés sont des corrélations, pas des
+  preuves de causalité.
 
 ---
 
-*Audit produit par <prénom>, <date>, dans le cadre du brief M2-B1 ATOS.*
+*Audit produit par Théo, 16/06/2026, dans le cadre du brief M2-B1 ATOS.*

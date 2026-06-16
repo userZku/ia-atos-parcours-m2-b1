@@ -1,9 +1,15 @@
-# M2-B1 — Squelette repo (Banque Eckmühl — audit + pipeline)
+# M2-B1 — Banque Eckmühl (audit + pipeline)
 
-> **Repo template GitHub.** Clique sur **« Use this template »** en haut à
-> droite de cette page → **Create a new repository** → nomme-le
-> `M2-B1-pipe-eckmuhl-<prénom>` sur **ton** compte GitHub personnel.
-> C'est ce nouveau repo que tu cloneras pour travailler.
+Ce repository contient le rendu du brief M2-B1 : audit qualite,
+audit ethique, pipeline de pretraitement industrialise et documentation.
+
+## 📌 Livrables principaux
+
+- Rapport d'audit (qualite + ethique) : [audit.md](./audit.md)
+- Datasheet du dataset : [datasheet.md](./datasheet.md)
+- Justification des choix techniques (encodage, conservation des variables) : [choix_techniques.md](./choix_techniques.md)
+- Pipeline de pretraitement : [src/preprocess.py](./src/preprocess.py)
+- Notebook de travail : [notebooks/M2-B1_theo.ipynb](./notebooks/M2-B1_theo.ipynb)
 
 ---
 
@@ -123,6 +129,37 @@ Cf. [`./ressources/README.md`](./ressources/README.md) pour l'ordre de mobilisat
 - Pas de `print` (utiliser `display()` ou `logging`)
 - `random_state=42` partout où il y a de l'aléa
 - `pathlib.Path` pour les chemins (pas de `os.path`)
+
+---
+
+## 🔁 Reproduire les résultats
+
+Depuis la racine du repo :
+
+```bash
+# 1) Environnement
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+
+# 2) Dépendances
+pip install -r requirements.txt
+
+# 3) Générer / regénérer le pipeline de prétraitement
+python src/preprocess.py
+
+# 4) Vérifier le contrat du pipeline
+python contract_test.py
+
+# 5) Ouvrir le notebook de travail
+jupyter notebook notebooks/M2-B1_theo.ipynb
+```
+
+Livrables à consulter :
+
+- Audit DPO : [audit.md](./audit.md)
+- Datasheet dataset : [datasheet.md](./datasheet.md)
+- Justification des choix techniques : [choix_techniques.md](./choix_techniques.md)
 
 ---
 
