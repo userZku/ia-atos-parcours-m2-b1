@@ -31,7 +31,10 @@ Exemple :
 >    seuil 4/5 = 0.8). Les travailleurs étrangers sont 33 % moins susceptibles
 >    d'être classés `good_credit`. Recommandation : audit complet en
 >    consultation avec votre DPO.
-> 3. ...
+> 3. **`customer_segment` (basic/plus/premium/private) corrèle probablement
+>    avec le niveau de richesse** : risque d'exclure indirectement des profils
+>    socio-économiques fragiles. Recommandation : validation DPO avant usage en
+>    scoring et suivi de l'impact par segment.
 
 ## 3. Recommandations
 

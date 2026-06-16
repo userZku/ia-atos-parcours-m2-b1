@@ -52,6 +52,12 @@ ORDINAL_FEATURES: dict[str, list[str]] = {
         "4-7 years",
         ">= 7 years",
     ],
+    "customer_segment": [
+        "basic",
+        "plus",
+        "premium",
+        "private",
+    ],
 }
 CATEGORICAL_FEATURES: list[str] = [
     "checking_account_status",
@@ -78,12 +84,17 @@ def load_dataset(path: Path) -> tuple[pd.DataFrame, pd.Series]:
     — sois explicite sur tes choix.
     """
     df = pd.read_csv(path)
-    # TODO (tâche 5 bis — geste « adapter ») : un complément arrive en cours de
-    # mission → data/german_credit_supplement.csv (colonne `customer_segment`,
-    # même ordre de lignes). Charge-le, joins-le ici par position, décide de sa
-    # nature (numérique / ordinale / nominale ?) et ajoute-la à la BONNE liste
-    # de features ci-dessus. N'oublie pas ses ~4 % de manquants.
-    # (À toi de trouver comment charger et joindre ce complément — c'est le geste « adapter ».)
+
+    # Tâche 5 bis : joindre le complément par position (même ordre de lignes).
+    supplement_path = path.parent / "german_credit_supplement.csv"
+    supplement = pd.read_csv(supplement_path)
+    if "customer_segment" not in supplement.columns:
+        raise KeyError("Colonne 'customer_segment' absente du fichier complément.")
+    if len(supplement) != len(df):
+        raise ValueError(
+            "Le complément n'a pas le même nombre de lignes que le dataset principal."
+        )
+    df["customer_segment"] = supplement["customer_segment"]
     y = df[TARGET_COLUMN].map(TARGET_MAPPING)
     if y.isna().any():
         unknown = df.loc[y.isna(), TARGET_COLUMN].unique().tolist()
