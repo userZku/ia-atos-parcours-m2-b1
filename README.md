@@ -21,11 +21,11 @@ git clone git@github.com:<ton-user>/M2-B1-pipe-eckmuhl-<prenom>.git
 cd M2-B1-pipe-eckmuhl-<prenom>
 
 # 1. Environnement virtuel
-python -m venv .venv && source .venv/bin/activate     # Linux/macOS
+uv venv .venv && source .venv/bin/activate            # Linux/macOS
 # .venv\Scripts\activate                              # Windows
 
 # 2. Dépendances
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 
 # 3. Vérification
 jupyter notebook notebooks/M2-B1_template.ipynb       # → s'ouvre dans le navigateur
@@ -138,12 +138,12 @@ Depuis la racine du repo :
 
 ```bash
 # 1) Environnement
-python -m venv .venv
+uv venv .venv
 # Windows
 .venv\Scripts\activate
 
 # 2) Dépendances
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 
 # 3) Générer / regénérer le pipeline de prétraitement
 python src/preprocess.py
