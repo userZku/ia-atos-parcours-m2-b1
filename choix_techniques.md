@@ -119,3 +119,27 @@ Ces points sont suivis dans l'audit et doivent rester dans la boucle de gouverna
 - encodage frequenciel ou regularise pour categories tres cardinales
 - imputation conditionnelle (par segment) au lieu d'une imputation globale
 - calibration/contraintes de fairness en phase modelisation (M7/M8)
+
+## 8. Choix de persistance: Parquet vs CSV vs PostgreSQL
+
+### Decision retenue
+
+Le dataset propre est persiste en **Parquet** (`data/german_credit_clean.parquet`).
+
+### Pourquoi Parquet plutot que CSV
+
+- format colonnaire adapte aux lectures analytiques
+- compression efficace (dans ce projet: ~28.0 KB en Parquet vs ~207.6 KB en CSV, soit ~7.4x plus leger)
+- typage mieux preserve (moins d'ambiguite qu'un CSV texte)
+
+### Pourquoi Parquet plutot que PostgreSQL (dans ce contexte)
+
+- brief M2-B1 centre sur un livrable fichier simple, portable et reproductible
+- pas de dependance a un serveur, schema SQL, credentials, ou infra d'exploitation
+- plus adapte au partage pedagogique (repo + notebook) qu'une base relationnelle a maintenir
+
+### Position nuancee
+
+- **CSV** reste pertinent comme format brut d'echange universel.
+- **PostgreSQL** devient pertinent quand il faut du multi-utilisateur, des mises a jour transactionnelles et des requetes operationnelles.
+- Pour ce brief oriente pipeline offline, **Parquet** est le meilleur compromis simplicite/performance.
